@@ -27,3 +27,7 @@ npm start
 ```
 
 > Jika `nodemon` belum ada, instal `nodemon` dengan perintah `npm install -g nodemon`. Selesai instalasi, jalankan server kembali dengan perintah `npm start`.
+
+## Insomnia
+
+Jika ingin mencobanya terlebih dahulu, import file `INSOMNIA-SPP-API-1.0.0.json` ke Insomnia.
