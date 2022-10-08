@@ -24,6 +24,7 @@ exports.makePassword = async (password, salt=null) => {
 
 exports.authenticated = async (req) => {
   const user = await UserModel.findOne({email: req.body.email});
+  
   if (!user) {
     return null
   }

@@ -3,6 +3,7 @@ const UserModel = require("../models/user.model");
 const router = express.Router();
 const { authenticated, makeToken, makePassword } = require("../utils/auth");
 
+
 router.post("/", async (req, res) => {
   const passwordSalt = await makePassword(req.body.password);
 
@@ -21,11 +22,33 @@ router.post("/", async (req, res) => {
   })
 })
 
+
+router.get("/", async (req, res) => {
+  let data = await UserModel.find();
+  res.json(data);
+})
+
+
+router.get("/:id", async (req, res) => {
+  
+})
+
+
+router.put("/:id", async (req, res) => {
+  
+})
+
+
+router.delete("/:id", async (req, res) => {
+  
+})
+
+
 router.post("/signin", async (req, res) => {
   const user = await authenticated(req);
 
   if (user) { 
-    res.status(201).json({ token: await makeToken(user) }) 
+    res.json({ token: await makeToken(user) }) 
   } else {
     res.status(401).json({message: "otentikasi gagal, silahkan coba kembali"})
   }

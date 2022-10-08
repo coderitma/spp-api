@@ -29,20 +29,3 @@ const UserModel = mongoose.model("User", mongoose.Schema({
 }));
 
 module.exports = UserModel
-
-// exports.createUser = async (email, nama, password) => {
-//   const passwordSalt = makePassword(password);
-//   const newUser = new UserSchema({
-//     email, nama,
-//     ...passwordSalt, isActive: true
-//   });
-
-//   await newUser.save();
-//   return { email, nama }
-// }
-
-
-// exports.get = async (email, exclude) => {
-//   const user = await UserSchema.findOne({email});
-//   return user;
-// }
