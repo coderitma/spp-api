@@ -1,13 +1,12 @@
 const express = require("express");
 const KelasModel = require("../kelas/models");
-const { isAuthenticated } = require("../../cores/permissions/middlewares");
 
 const SPPModel = require("../spp/models");
 const SiswaModel = require("./models");
-const {
-  generateCounterID,
-  getMonthName,
-} = require("../../cores/databases/helpers");
+
+const { isAuthenticated } = require("../../cores/permissions");
+const { getMonthName, generateCounterID } = require("../../cores/helpers");
+
 const SiswaController = express.Router();
 
 SiswaController.post("/", [isAuthenticated], async (req, res) => {

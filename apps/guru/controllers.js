@@ -1,8 +1,17 @@
-const { isAuthenticated } = require("../../cores/permissions/middlewares");
-
 const express = require("express");
+const { generateID } = require("../../cores/helpers");
+const { isAuthenticated } = require("../../cores/permissions");
 const GuruModel = require("./models");
 const GuruController = express.Router();
+
+GuruController.get("/id", [isAuthenticated], async (req, res) => {
+  try {
+    let kode = await generateID("GRU", GuruModel);
+    return res.json({ kode });
+  } catch (error) {
+    return res.status(400).json(error);
+  }
+});
 
 GuruController.post("/", [isAuthenticated], async (req, res) => {
   try {

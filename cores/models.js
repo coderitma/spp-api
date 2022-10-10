@@ -1,4 +1,4 @@
-const mongodb = require("./databases/mongodb");
+const mongodb = require("./mongodb");
 
 const UserModel = mongodb.model(
   "User",

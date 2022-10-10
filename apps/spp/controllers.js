@@ -1,5 +1,6 @@
 const express = require("express");
-const { isAuthenticated } = require("../../cores/permissions/middlewares");
+const { isAuthenticated } = require("../../cores/permissions");
+
 const SiswaModel = require("../siswa/models");
 const SPPModel = require("./models");
 const SPPController = express.Router();

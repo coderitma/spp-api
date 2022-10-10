@@ -1,4 +1,4 @@
-const mongodb = require("../../cores/databases/mongodb");
+const mongodb = require("../../cores/mongodb");
 
 const GuruModel = mongodb.model(
   "Guru",

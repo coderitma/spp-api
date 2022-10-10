@@ -1,7 +1,8 @@
 const express = require("express");
+const { isAuthenticated } = require("../../cores/permissions");
 const KelasController = express.Router();
 const GuruModel = require("../guru/models");
-const { isAuthenticated } = require("../../cores/permissions/middlewares");
+
 const KelasModel = require("./models");
 
 KelasController.post("/", async (req, res) => {

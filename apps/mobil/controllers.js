@@ -1,15 +1,14 @@
-const { isAuthenticated } = require("../../cores/permissions/middlewares");
-
 const express = require("express");
+const { isAuthenticated } = require("../../cores/permissions");
 const { ValidateMobilBeforeCreate } = require("./validations");
 const MobilController = express.Router();
 
 MobilController.post("/", [isAuthenticated], async (req, res) => {
   try {
-    let validations = await ValidateMobilBeforeCreate(req);
+    let { isValid, errorMessage } = await ValidateMobilBeforeCreate(req);
 
-    if (!validations.isValid) {
-      return res.status(400).json(validations.messages);
+    if (!isValid) {
+      return res.status(400).json(errorMessage);
     }
 
     return res.status(201).json(req.body);

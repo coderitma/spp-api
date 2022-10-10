@@ -1,14 +1,6 @@
 var jwt = require("jsonwebtoken");
 var crypto = require("crypto");
-const UserModel = require("../../apps/user/models");
-
-/**
- * Method yang ada async meskipun tidak ada await
- * di dalam isinya, saat dipanggil harus menggunakan await!
- * Untuk berjaga-jaga saja, buat semua async meskipun di dalamnya
- * tidak ada await. Saat memanggil method tersebut, harus wajib pake
- * await.
- */
+const UserModel = require("./models");
 
 exports.makePassword = async (password, salt = null) => {
   if (!salt) {
