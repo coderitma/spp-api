@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const UserModel = require("../models/user.model");
+const UserModel = require("../../apps/user/models");
 
 exports.isAuthenticated = async (req, res, next) => {
   try {
@@ -10,28 +10,25 @@ exports.isAuthenticated = async (req, res, next) => {
     next();
   } catch (error) {
     return res.status(401).json({
-      message: "a client is forbidden from accessing a valid url."
-    })
+      message: "a client is forbidden from accessing a valid url.",
+    });
   }
-}
-
+};
 
 exports.allowAny = (req, res, next) => {
   next();
-}
-
+};
 
 exports.isAdminUser = async (req, res, next) => {
   try {
     if (req.user && req.user.isSuperuser) {
       next();
     } else {
-      throw { message: "a client is forbidden from accessing a valid url." }
+      throw { message: "a client is forbidden from accessing a valid url." };
     }
   } catch (error) {
-    return res.status(401).json(error)
+    return res.status(401).json(error);
   }
-}
+};
 
-
-exports.isAuthenticatedOrReadOnly = () => {}
+exports.isAuthenticatedOrReadOnly = () => {};
