@@ -43,3 +43,7 @@ exports.getMonthName = async (monthNumber) => {
 
   return monthNames[monthNumber];
 };
+
+exports.objectIsExist = async (obj) => {
+  return Object.keys(obj).length === 0 && obj.constructor === Object;
+};

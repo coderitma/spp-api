@@ -1,4 +1,4 @@
-const mongodb = require("../../cores/databases/mongodb");
+const mongodb = require("../../cores/mongodb");
 
 const MobilModel = mongodb.model(
   "Mobil",
@@ -8,23 +8,30 @@ const MobilModel = mongodb.model(
         type: String,
         unique: true,
       },
+      nomorPlat: {
+        type: String,
+        unique: true,
+      },
       nama: {
         type: String,
         required: true,
       },
       tarifJam: {
         type: Number,
-        required: true,
         default: 50000,
       },
       tarifHari: {
         type: Number,
-        required: true,
         default: 40000 * 24,
+      },
+      status: {
+        type: Boolean,
+        required: true,
+        default: true,
       },
     },
     { versionKey: false }
   )
 );
 
-module.exports = GuruModel;
+module.exports = MobilModel;

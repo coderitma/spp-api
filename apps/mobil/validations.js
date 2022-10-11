@@ -1,48 +1,177 @@
-exports.ValidateMobilBeforeCreate = async (req) => {
-  let errorMessage = { message: "" };
-  let isValid = true;
+const MobilModel = require("./models");
+const { body, validationResult, param } = require("express-validator");
 
-  // periksa kode mobil
-  if (!req.body.kode) {
-    isValid = false;
-    errorMessage.kode.push("kode harus tersedia");
+exports.validateMobilBeforeCreate = async (req, res, next) => {
+  let validators = [
+    body("kode")
+      .exists()
+      .withMessage("must be available")
+      .bail()
+      .isLength({ min: 5 })
+      .withMessage("must be at least 5 chars long")
+      .bail()
+      .custom(async (value, { req }) => {
+        let mobil = await MobilModel.findOne({ kode: value });
+        if (mobil) {
+          return Promise.reject("Mobil is available");
+        }
+      }),
+    body("nomorPlat")
+      .exists()
+      .withMessage("nomorPlat harus disertakan")
+      .bail()
+      .notEmpty()
+      .withMessage("nomor plat tidak boleh kosong")
+      .bail()
+      .isLength({ max: 15 })
+      .withMessage("nomor plat tidak boleh melebihi 15 karakter")
+      .bail()
+      .custom(async (value, { req }) => {
+        let mobil = await MobilModel.findOne({ nomorPlat: value });
+        if (mobil) {
+          return Promise.reject(`Mobil dengan nomor ${value} sudah ada`);
+        }
+      }),
+    body("nama")
+      .exists()
+      .notEmpty()
+      .withMessage("Nama must be ")
+      .bail()
+      .isLength({ min: 3 }),
+    body("tarifJam")
+      .notEmpty()
+      .withMessage("Tarif jam wajib ada!")
+      .bail()
+      .isNumeric()
+      .withMessage("must be number")
+      .bail()
+      .toInt()
+      .custom(async (value, { req }) => {
+        console.log(typeof value, value);
+        if (value < 40000) {
+          return Promise.reject(`${value} must be greater than ${40000}`);
+        }
+      }),
+    body("tarifHari")
+      .notEmpty()
+      .bail()
+      .isNumeric()
+      .withMessage("must be number")
+      .bail()
+      .toInt()
+      .custom(async (value, { req }) => {
+        console.log(typeof value, value);
+        if (value < 90000) {
+          return Promise.reject(`${value} must be greater than ${90000}`);
+        }
+      }),
+    body("status")
+      .exists()
+      .withMessage("status must be available on the body")
+      .bail()
+      .isBoolean()
+      .withMessage("Status must be boolean true or false"),
+  ];
+
+  for (let validation of validators) {
+    const result = await validation.run(req);
+    // if (result.errors.length) break;
   }
 
-  // periksa nama
-  if (!req.body.nama) {
-    isValid = false;
-    errorMessage.message = "Nama mobil harus ada!";
+  const errors = validationResult(req);
+  if (errors.isEmpty()) {
+    return next();
   }
 
-  // periksa tarifJam
-  if (!req.body.tarifJam) {
-    isValid = false;
-    errorMessage.message = "tarif per jam harus ada!";
+  return res.status(400).json({ errors: errors.array() });
+};
+
+exports.validateMobilBeforeUpdate = async (req, res, next) => {
+  let validators = [
+    param("kode")
+      .exists()
+      .withMessage("must be available")
+      .bail()
+      .isLength({ min: 5 })
+      .withMessage("must be at least 5 chars long")
+      .bail()
+      .custom(async (value, { req }) => {
+        let mobil = await MobilModel.findOne({ kode: value });
+        if (!mobil) {
+          return Promise.reject("Mobil not available");
+        }
+      }),
+    body("nomorPlat")
+      .exists()
+      .withMessage("nomorPlat harus disertakan")
+      .bail()
+      .notEmpty()
+      .withMessage("nomor plat tidak boleh kosong")
+      .bail()
+      .isLength({ max: 15 })
+      .withMessage("nomor plat tidak boleh melebihi 15 karakter")
+      .bail()
+      .custom(async (value, { req }) => {
+        let mobil = await MobilModel.findOne({
+          nomorPlat: value,
+          kode: { $ne: req.params.kode },
+        });
+        if (mobil) {
+          return Promise.reject(
+            `Mobil dengan nomor ${value} sudah dimiliki mobil lainnya`
+          );
+        }
+      }),
+    body("nama")
+      .exists()
+      .notEmpty()
+      .withMessage("Nama wajib ada!")
+      .bail()
+      .isLength({ min: 3 }),
+    body("tarifJam")
+      .notEmpty()
+      .withMessage("Tarif jam wajib ada")
+      .bail()
+      .isNumeric()
+      .withMessage("Tarif dalam jam wajib ada")
+      .bail()
+      .toInt()
+      .custom(async (value, { req }) => {
+        if (value < 40000) {
+          return Promise.reject(`${value} harus lebih besar dari ${40000}`);
+        }
+      }),
+    body("tarifHari")
+      .notEmpty()
+      .bail()
+      .isNumeric()
+      .withMessage("Tarif hari wajib ada")
+      .bail()
+      .toInt()
+      .custom(async (value, { req }) => {
+        console.log(typeof value, value);
+        if (value < 90000) {
+          return Promise.reject(`${value} harus lebih besar dari ${90000}`);
+        }
+      }),
+    // body("status")
+    //   .exists()
+    //   .withMessage("status must be available on the body")
+    //   .bail()
+    //   .isBoolean()
+    //   .withMessage("Status must be boolean true or false"),
+  ];
+
+  for (let validation of validators) {
+    const result = await validation.run(req);
+    // if (result.errors.length) break;
   }
 
-  // periksa tarifJam tidak boleh dibawah 30000
-  if (req.body.tarifJam < 30000) {
-    isValid = false;
-    errorMessage.message = "tarif per jam tidak boleh dibawah 30000";
+  const errors = validationResult(req);
+
+  if (errors.isEmpty()) {
+    return next();
   }
 
-  // periksa tarifHari
-  if (!req.body.tarifHari) {
-    isValid = false;
-    errorMessage.message = "tarif per hari harus ada!";
-  }
-
-  // periksa tarifHari tidak boleh dibawah 30000
-  if (req.body.tarifHari < 30000) {
-    isValid = false;
-    errorMessage.message = "tarif per hari tidak boleh dibawah 30000";
-  }
-
-  // periksa status mobil
-  if (!req.body.status) {
-    isValid = false;
-    errorMessage.message = "Status harus ada!";
-  }
-
-  return { errorMessage, isValid };
+  return res.status(400).json({ errors: errors.array() });
 };
