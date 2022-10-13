@@ -1,7 +1,7 @@
 const mongodb = require("../../cores/mongodb");
 
-const MobilModel = mongodb.model(
-  "Mobil",
+const PinjamModel = mongodb.model(
+  "Pinjam",
   mongodb.Schema(
     {
       kode: {
@@ -35,6 +35,27 @@ const MobilModel = mongodb.model(
       kodeMobil: {
         type: String,
         required: true,
+      },
+      namaMobil: {
+        type: String,
+        required: true,
+      },
+      tarifJam: {
+        type: Number,
+        required: true,
+      },
+      tarifHari: {
+        type: Number,
+        required: true,
+      },
+      lamaPinjam: {
+        type: Number,
+        requied: true,
+      },
+      durasi: {
+        type: String,
+        enum: ["jam", "hari"],
+        default: "jam",
       },
       totalBiaya: {
         type: Number,
@@ -70,4 +91,4 @@ const MobilModel = mongodb.model(
   )
 );
 
-module.exports = MobilModel;
+module.exports = PinjamModel;

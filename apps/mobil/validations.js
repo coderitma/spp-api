@@ -72,7 +72,9 @@ exports.validateMobilBeforeCreate = async (req, res, next) => {
       .isBoolean()
       .withMessage("Status must be boolean true or false"),
   ];
-
+  // untuk berhasil, client harus menyedikana token dari mana
+  // untuk diproses di sini.
+  // TODO: remove this code after i upgrade node version
   for (let validation of validators) {
     const result = await validation.run(req);
     // if (result.errors.length) break;

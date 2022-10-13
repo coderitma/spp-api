@@ -47,3 +47,29 @@ exports.getMonthName = async (monthNumber) => {
 exports.objectIsExist = async (obj) => {
   return Object.keys(obj).length === 0 && obj.constructor === Object;
 };
+
+exports.cleanDate = (date, timeZone = "Asia/Jakarta", countryCode = "id") => {
+  if (typeof date === "string") {
+    return new Date(date).toLocaleDateString(countryCode, { timeZone });
+  }
+
+  return new Date(
+    date.toLocaleString(countryCode, {
+      timeZone,
+    })
+  );
+};
+
+exports.addHours = (date, hour) => {
+  let cloneDate = new Date(date.getTime());
+  return cloneDate.setTime(date.getTime() + hour * 60 * 60 * 1000);
+};
+
+exports.addDays = (date, days) => {
+  let cloneDate = new Date(date.getTime());
+  return cloneDate.setDate(date.getDate() + days);
+};
+
+exports.compareTwoDate = async (loanDate, returnDate) => {
+  return loanDate >= returnDate;
+};
